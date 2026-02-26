@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexBiz Global | Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --p: #0071e3; --d: #1d1d1f; --g: #f5f5f7; }
+        * { margin:0; padding:0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
+        
+        header { position: fixed; width: 100%; background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); z-index: 1000; border-bottom: 1px solid #eee; }
+        .nav { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; padding: 15px 20px; align-items: center; }
+        .logo { font-weight: 800; font-size: 1.5rem; color: var(--d); text-decoration: none; }
+        .nav-links a { text-decoration: none; color: #333; font-weight: 700; margin-left: 20px; font-size: 0.85rem; }
+        
+        /* Hero */
+        .hero { height: 50vh; display: flex; align-items: center; justify-content: center; text-align: center; color: white; background: #000; position: relative; }
+        .hero img { position: absolute; width: 100%; height: 100%; object-fit: cover; opacity: 0.4; }
+        .hero-content { z-index: 2; }
+
+        /* USER DASHBOARD (Inaonekana baada ya Login) */
+        #user-portal { display: none; background: #fff; padding: 40px 20px; border-bottom: 1px solid #eee; }
+        .portal-box { max-width: 900px; margin: 0 auto; background: #f9f9f9; padding: 30px; border-radius: 20px; border-left: 5px solid var(--p); }
+        .welcome-msg { color: var(--p); font-weight: 800; font-size: 1.8rem; margin-bottom: 15px; }
+        .payment-info { background: #e7f3ff; padding: 20px; border-radius: 12px; margin-top: 20px; }
+
+        /* Main Store */
+        section { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; }
+        .p-card { border: 1px solid #eee; border-radius: 20px; padding: 15px; background: #fff; transition: 0.3s; position: relative; }
+        .p-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 15px; }
+        .btn-order { width: 100%; padding: 12px; border: none; background: var(--d); color: #fff; border-radius: 10px; cursor: pointer; font-weight: 700; margin-top: 10px; }
+
+        /* Auth Modal */
+        .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:2000; align-items:center; justify-content:center; }
+        .modal-content { background:white; padding:30px; border-radius:20px; width:400px; }
+        input { width:100%; padding:12px; margin:8px 0; border:1px solid #ddd; border-radius:8px; }
+
+        footer { padding: 50px 20px; background: #f5f5f7; text-align: center; line-height: 1.8; margin-top: 50px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="nav">
+        <a href="#" class="logo">NEXBIZ</a>
+        <div class="nav-links">
+            <a href="#home">NYUMBANI</a>
+            <a href="#shop">BIDHAA</a>
+            <a href="#about">KUHUSU</a>
+            <a href="javascript:void(0)" onclick="openModal()" id="nav-auth-btn" style="background:var(--p); color:white; padding:8px 18px; border-radius:20px;">SIGN IN</a>
+        </div>
+    </div>
+</header>
+
+<div id="home" class="hero">
+    <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1200" alt="Hero">
+    <div class="hero-content">
+        <h1>NexBiz Global Platform</h1>
+        <p>Future of Commerce, Designed for Excellence.</p>
+    </div>
+</div>
+
+<div id="user-portal">
+    <div class="portal-box">
+        <div class="welcome-msg">WELCOME NEXBIZ, <span id="user-display-name">Guest</span>!</div>
+        <p style="font-size: 1.1rem; color: #444;">Tumefurahi kuwa nawe kwenye jukwaa letu la kisasa.</p>
+        
+        <div style="margin-top: 25px; border-top: 1px solid #ddd; padding-top: 20px;">
+            <h3 style="color: #d32f2f;">Ingiza Bidhaa Zako NexBiz</h3>
+            <p>Ikiwa unatamani bidhaa za kampuni yako zionekane kwenye website ya NexBiz na ziwafikie maelfu ya wateja:</p>
+            <ul style="margin: 15px 0 15px 20px; line-height: 2;">
+                <li>Tutakubaliana kwa makubaliano maalum ya kibiashara.</li>
+                <li>Utatakiwa kulipia kiasi cha usajili wa bidhaa.</li>
+                <li>Mimi (Admin) nitaingiza bidhaa zako mara baada ya kukamilisha malipo.</li>
+            </ul>
+            
+            <div class="payment-info">
+                <b>UTARATIBU WA MALIPO:</b><br>
+                Namba ya M-Pesa: <b>0763315267</b><br>
+                Jina: <b>JONAS EDWARD</b><br>
+                <small>*Baada ya malipo, wasiliana nasi kupitia WhatsApp kuthibitisha.</small>
+            </div>
+            <button onclick="logout()" style="margin-top:20px; background:none; border:1px solid red; color:red; padding:5px 10px; border-radius:5px; cursor:pointer;">Logout / Toka</button>
+        </div>
+    </div>
+</div>
+
+<section id="shop">
+    <h2 style="text-align:center; margin-bottom:30px;">Duka la Bidhaa</h2>
+    <div class="grid" id="p-grid"></div>
+</section>
+
+<section id="about">
+    <h2 style="text-align:center; margin-bottom:20px;">Kuhusu</h2>
+    <p id="about-display" style="text-align:center; max-width:800px; margin:0 auto; color:#666;"></p>
+</section>
+
+<div class="modal" id="authModal">
+    <div class="modal-content">
+        <h2 style="margin-bottom:15px;">Sign In / Register</h2>
+        <input type="text" id="regName" placeholder="Jina lako kamili">
+        <input type="email" id="regEmail" placeholder="Barua Pepe (Email)">
+        <input type="text" id="regPhone" placeholder="Namba ya Simu">
+        <input type="text" id="regCountry" placeholder="Nchi">
+        <input type="text" id="regRegion" placeholder="Mkoa">
+        <button class="btn-order" style="background:var(--p);" onclick="processAuth()">ENDELEA</button>
+        <button onclick="closeModal()" style="width:100%; background:none; border:none; color:gray; margin-top:10px; cursor:pointer;">Funga</button>
+    </div>
+</div>
+
+<footer>
+    <p><b>LOCATION:</b> ARUSHA, TANZANIA | <b>EMAIL:</b> jsedward27@gmail.com | <b>PHONE:</b> +255 763 315 267</p>
+    <hr style="margin:20px 0; opacity:0.1;">
+    <p>&copy; 2026 NexBiz Global. All Rights Reserved. <br> Designed by <b>JONAS E. THE GREAT</b></p>
+</footer>
+
+<script>
+    function openModal() { document.getElementById('authModal').style.display='flex'; }
+    function closeModal() { document.getElementById('authModal').style.display='none'; }
+
+    function processAuth() {
+        const user = {
+            name: document.getElementById('regName').value,
+            email: document.getElementById('regEmail').value,
+            phone: document.getElementById('regPhone').value,
+            region: document.getElementById('regRegion').value,
+            country: document.getElementById('regCountry').value
+        };
+
+        if(user.name && user.email) {
+            localStorage.setItem('nexbiz_user_session', JSON.stringify(user));
+            
+            // Tuma pia kwa Admin List
+            let allUsers = JSON.parse(localStorage.getItem('nexbiz_all_users')) || [];
+            allUsers.push(user);
+            localStorage.setItem('nexbiz_all_users', JSON.stringify(allUsers));
+            
+            alert("Usajili Umekamilika!");
+            location.reload();
+        } else {
+            alert("Tafadhali jaza taarifa zote!");
+        }
+    }
+
+    function logout() {
+        localStorage.removeItem('nexbiz_user_session');
+        location.reload();
+    }
+
+    function init() {
+        // 1. Check Session
+        const session = JSON.parse(localStorage.getItem('nexbiz_user_session'));
+        if(session) {
+            document.getElementById('user-portal').style.display = 'block';
+            document.getElementById('user-display-name').innerText = session.name.toUpperCase();
+            document.getElementById('nav-auth-btn').innerText = "MY ACCOUNT";
+            document.getElementById('nav-auth-btn').style.background = "#25d366"; // Change color to green
+        }
+
+        // 2. Load Products
+        const products = JSON.parse(localStorage.getItem('nexbiz_products')) || [];
+        const grid = document.getElementById('p-grid');
+        grid.innerHTML = products.map(p => `
+            <div class="p-card">
+                <img src="${p.img}">
+                <small>${p.cat}</small>
+                <h4>${p.name}</h4>
+                <p style="color:var(--p); font-weight:800;">TSH ${p.price}</p>
+                <button class="btn-order" onclick="window.open('https://wa.me/255763315267?text=Habari, Nahitaji bidhaa ya ${p.name}')">AGIZA</button>
+            </div>
+        `).join('');
+
+        // 3. Load About
+        document.getElementById('about-display').innerText = localStorage.getItem('nexbiz_about') || "NexBiz Global ni suluhisho la biashara za kisasa.";
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>
