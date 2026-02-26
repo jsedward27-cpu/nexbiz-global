@@ -8,23 +8,43 @@
     <style>
         :root { --p: #00d4ff; --dark: #050c16; --card: #0f1a2a; }
         body { background: var(--dark); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; display: flex; margin:0; }
+        
+        /* LOGIN LOCK SCREEN */
+        #admin-lock { position: fixed; inset: 0; background: var(--dark); z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+        .lock-box { background: var(--card); padding: 40px; border-radius: 25px; text-align: center; border: 1px solid #222; width: 90%; max-width: 400px; }
+
         .sidebar { width: 260px; background: var(--card); height: 100vh; position: fixed; padding: 20px; border-right: 1px solid #222; overflow-y: auto; }
         .main { margin-left: 260px; padding: 40px; width: calc(100% - 260px); }
         .nav-item { padding: 15px; cursor: pointer; border-radius: 12px; margin-bottom: 5px; color: #94a3b8; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
         .nav-item.active { background: var(--p); color: #000; font-weight: 800; }
+        
         .card { background: var(--card); padding: 20px; border-radius: 15px; margin-bottom: 20px; border: 1px solid #222; }
         input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 10px; }
-        .btn { background: var(--p); color: #000; border: none; padding: 12px; border-radius: 10px; font-weight: 800; cursor: pointer; width: 100%; }
+        .btn { background: var(--p); color: #000; border: none; padding: 12px; border-radius: 10px; font-weight: 800; cursor: pointer; width: 100%; transition: 0.3s; }
+        .btn:hover { opacity: 0.8; transform: scale(0.98); }
         .btn-red { background: #ff4d6d; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+        
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
         .p-item { background: #000; padding: 10px; border-radius: 10px; text-align: center; border: 1px solid #222; }
         .p-item img { width: 100%; height: 100px; object-fit: cover; border-radius: 5px; }
-        #receipt-area { background: white; color: black; padding: 25px; width: 300px; margin: 0 auto; border: 1px solid #ddd; position: relative; }
-        #receipt-area::after { content: "NEXBIZ"; position: absolute; top: 40%; left: 10%; font-size: 3rem; color: rgba(0,0,0,0.05); transform: rotate(-30deg); font-weight: 900; }
+
+        /* RECEIPT AREA IMPROVED */
+        #receipt-area { background: white; color: black; padding: 25px; width: 350px; margin: 0 auto; border: 1px solid #ddd; position: relative; font-family: monospace; }
+        .rcpt-line { display: flex; justify-content: space-between; border-bottom: 1px dashed #eee; padding: 5px 0; }
+        
         @media print { body * { visibility: hidden; } #receipt-area, #receipt-area * { visibility: visible; position: fixed; left:0; top:0; } }
     </style>
 </head>
 <body>
+
+<div id="admin-lock">
+    <div class="lock-box">
+        <i class="ph-fill ph-shield-check" style="font-size: 3rem; color: var(--p);"></i>
+        <h2 style="margin-bottom: 20px;">NEXBIZ ADMIN</h2>
+        <input type="password" id="passInput" placeholder="Namba ya Siri">
+        <button class="btn" onclick="validate()">INGIA KWENYE PANEL</button>
+    </div>
+</div>
 
 <div class="sidebar">
     <h2 style="color:var(--p); text-align:center;">NexBiz CMS</h2>
@@ -34,19 +54,19 @@
     <div class="nav-item" onclick="showTab('tab-about', this)"><i class="ph-bold ph-info"></i> Kuhusu Management</div>
     <div class="nav-item" onclick="showTab('tab-analytics', this)"><i class="ph-bold ph-chart-line"></i> Analytics</div>
     <div class="nav-item" onclick="showTab('tab-settings', this)"><i class="ph-bold ph-gear"></i> Site Settings</div>
+    <div class="nav-item" onclick="showTab('tab-security', this)"><i class="ph-bold ph-lock"></i> Security</div>
 </div>
 
 <div class="main">
     
     <div id="tab-products" class="tab-content">
         <h1>Management ya Bidhaa (Jumla: <span id="p-count">0</span>)</h1>
-        
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
             <div class="card">
-                <h3>Ongeza Category</h3>
-                <input type="text" id="newCatName" placeholder="Jina la Category (Mf: Vyakula)">
-                <button class="btn" onclick="addCategory()">Add Category</button>
-                <div id="cat-list-admin" style="margin-top:10px;"></div>
+                <h3>Management ya Categories</h3>
+                <input type="text" id="newCatName" placeholder="Jina la Category (Mf: Hardware)">
+                <button class="btn" onclick="addCategory()">SAVE CATEGORY</button>
+                <div id="cat-list-admin" style="margin-top:10px; display: flex; flex-wrap: wrap; gap: 5px;"></div>
             </div>
             
             <div class="card">
@@ -58,7 +78,6 @@
                 <button class="btn" onclick="saveProduct()">Upload Bidhaa</button>
             </div>
         </div>
-
         <div class="card">
             <h3>Bidhaa Zilizopo</h3>
             <div class="grid" id="admin-p-list"></div>
@@ -67,30 +86,38 @@
 
     <div id="tab-oda" class="tab-content" style="display:none;">
         <h1>Oda na Risiti</h1>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+        <div style="display:grid; grid-template-columns: 1fr 1.5fr; gap:20px;">
             <div class="card">
                 <h3>Oda Zilizozingia (<span id="o-count">0</span>)</h3>
                 <div id="oda-list"></div>
             </div>
             <div class="card">
                 <h3>Tengeneza Risiti</h3>
-                <input type="text" id="rName" placeholder="Mteja">
-                <textarea id="rDesc" placeholder="Bidhaa1-Bei, Bidhaa2-Bei"></textarea>
+                <input type="text" id="rName" placeholder="Jina la Mteja">
+                <textarea id="rDesc" placeholder="Kalamu-500, Daftari-2000, Rula-1500" rows="4"></textarea>
+                <p style="color: var(--p); font-size: 0.8rem;">*Andika bidhaa kisha weka mkato (-) kisha bei. Tenganisha bidhaa kwa koma (,)</p>
                 <button class="btn" onclick="genReceipt()">Preview Risiti</button>
-                <div id="receipt-area" style="margin-top:20px;">
-                    <center><h4>NEXBIZ GLOBAL</h4><small>Arusha, Tanzania</small><hr></center>
-                    <div id="r-out" style="font-size:12px; color:black;"></div>
-                    <div style="text-align:right; margin-top:20px; color:black;">
+                
+                <div id="receipt-area" style="margin-top:20px; display:none;">
+                    <center>
+                        <h3 id="rcpt-brand">NEXBIZ GLOBAL</h3>
+                        <small>Risiti Na: #<span id="rcpt-number"></span></small><br>
+                        <small id="rcpt-date"></small>
+                        <hr>
+                    </center>
+                    <p>Mteja: <b id="rcpt-client"></b></p>
+                    <div id="r-out" style="font-size:13px; color:black;"></div>
+                    <hr>
+                    <div style="display:flex; justify-content:space-between; font-weight:800;">
+                        <span>TOTAL:</span> <span id="rcpt-total">0</span>
+                    </div>
+                    <div style="text-align:right; margin-top:20px;">
                         <div style="font-family:'Dancing Script'; font-size:1.2rem; color:#0071e3;">Jonas Edward</div>
                         <small>C.E.O</small>
                     </div>
                 </div>
                 <button class="btn" style="background:#fff; margin-top:10px;" onclick="saveReceiptAndPrint()">Print & Save Risiti</button>
             </div>
-        </div>
-        <div class="card">
-            <h3>Risiti Zilizotoka</h3>
-            <div id="receipt-history"></div>
         </div>
     </div>
 
@@ -107,17 +134,27 @@
         <h1>Analytics & Traffic</h1>
         <div class="grid">
             <div class="card"><h3>Visitors</h3><h1 id="v-total">0</h1></div>
-            <div class="card"><h3>Bidhaa inayotoka sana</h3><h1 id="top-p" style="font-size:1rem;">N/A</h1></div>
+            <div class="card"><h3>Top Product</h3><h1 id="top-p" style="font-size:1rem;">N/A</h1></div>
         </div>
-        <div id="analytics-log"></div>
     </div>
 
     <div id="tab-settings" class="tab-content" style="display:none;">
         <h1>Site Settings</h1>
         <div class="card">
-            <label>Website Name</label><input type="text" id="sName" value="NexBiz Global">
-            <label>Logo URL au Text</label><input type="text" id="sLogo" value="NEXBIZ">
+            <label>Website Name</label><input type="text" id="sName" placeholder="Badilisha Jina la Website">
+            <label>Change Logo (Paste Image URL)</label><input type="text" id="sLogo" placeholder="Link ya Logo Mpya">
+            <label>Change Hero Banner (Paste Image URL)</label><input type="text" id="sBanner" placeholder="Link ya Banner ya Hero Section">
             <button class="btn" onclick="saveSettings()">Save Settings</button>
+        </div>
+    </div>
+
+    <div id="tab-security" class="tab-content" style="display:none;">
+        <h1>Security Management</h1>
+        <div class="card">
+            <h3>Badilisha Password ya Admin</h3>
+            <input type="password" id="newPass1" placeholder="Andika Password Mpya">
+            <input type="password" id="newPass2" placeholder="Rudia Password Mpya">
+            <button class="btn" onclick="changeAdminPass()">Update Password</button>
         </div>
     </div>
 
@@ -128,9 +165,27 @@
 </div>
 
 <script>
-    // INITIAL DATA LOAD
-    const defaultCats = ["ELECTRONICS", "VYAKULA", "MAVAZI", "UREMBO"];
-    if(!localStorage.getItem('nexbiz_cats')) localStorage.setItem('nexbiz_cats', JSON.stringify(defaultCats));
+    // --- SECURITY LOGIC ---
+    let masterPass = localStorage.getItem('nexbiz_admin_pass') || 'nexbiz2026';
+
+    function validate() {
+        const input = document.getElementById('passInput').value;
+        if(input === masterPass) {
+            document.getElementById('admin-lock').style.display = 'none';
+            refreshAll();
+        } else {
+            alert("Namba ya siri sio sahihi!");
+        }
+    }
+
+    function changeAdminPass() {
+        const p1 = document.getElementById('newPass1').value;
+        const p2 = document.getElementById('newPass2').value;
+        if(p1 !== p2 || p1 === "") { alert("Password hazifanani!"); return; }
+        localStorage.setItem('nexbiz_admin_pass', p1);
+        alert("Password imebadilishwa! Login upya.");
+        location.reload();
+    }
 
     function showTab(id, el) {
         document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
@@ -140,13 +195,14 @@
         refreshAll();
     }
 
-    // CATEGORY LOGIC
+    // --- CATEGORY LOGIC ---
     function addCategory() {
         const name = document.getElementById('newCatName').value.toUpperCase();
         if(!name) return;
-        let cats = JSON.parse(localStorage.getItem('nexbiz_cats'));
+        let cats = JSON.parse(localStorage.getItem('nexbiz_cats')) || ["ELECTRONICS", "HARDWARE"];
         cats.push(name);
         localStorage.setItem('nexbiz_cats', JSON.stringify(cats));
+        document.getElementById('newCatName').value = "";
         refreshAll();
     }
 
@@ -157,15 +213,13 @@
         refreshAll();
     }
 
-    // PRODUCT LOGIC
+    // --- PRODUCT LOGIC ---
     function saveProduct() {
         const cat = document.getElementById('pCatSelect').value;
         const name = document.getElementById('pName').value;
         const price = document.getElementById('pPrice').value;
         const file = document.getElementById('pFile').files[0];
-        
         if(!file || !name) return alert("Jaza taarifa zote!");
-
         const reader = new FileReader();
         reader.onload = e => {
             let products = JSON.parse(localStorage.getItem('nexbiz_products')) || [];
@@ -182,19 +236,29 @@
         refreshAll();
     }
 
-    // RECEIPT LOGIC
+    // --- RECEIPT LOGIC (TOTAL + AUTO NUMBER) ---
     function genReceipt() {
         const n = document.getElementById('rName').value;
         const d = document.getElementById('rDesc').value;
-        let total = 0, items = "";
+        if(!n || !d) return alert("Jaza jina na bidhaa!");
+
+        document.getElementById('receipt-area').style.display = 'block';
+        document.getElementById('rcpt-number').innerText = Math.floor(1000 + Math.random() * 9000);
+        document.getElementById('rcpt-date').innerText = new Date().toLocaleString();
+        document.getElementById('rcpt-client').innerText = n;
+        document.getElementById('rcpt-brand').innerText = localStorage.getItem('nexbiz_site_name') || "NEXBIZ GLOBAL";
+
+        let total = 0, itemsHtml = "";
         d.split(',').forEach(x => {
             const s = x.split('-');
             if(s[1]) {
-                total += parseInt(s[1].replace(/,/g, ''));
-                items += `<p style="display:flex; justify-content:space-between;"><span>${s[0]}</span> <span>${s[1]}</span></p>`;
+                const itemPrice = parseInt(s[1].replace(/,/g, '').trim());
+                total += itemPrice;
+                itemsHtml += `<div class="rcpt-line"><span>${s[0].trim()}</span> <span>${itemPrice.toLocaleString()}</span></div>`;
             }
         });
-        document.getElementById('r-out').innerHTML = `<p>Mteja: ${n}</p><p>Tarehe: ${new Date().toLocaleDateString()}</p><hr>${items}<hr><b>TOTAL: TSH ${total.toLocaleString()}</b>`;
+        document.getElementById('r-out').innerHTML = itemsHtml;
+        document.getElementById('rcpt-total').innerText = "TSH " + total.toLocaleString();
     }
 
     function saveReceiptAndPrint() {
@@ -202,26 +266,31 @@
         history.push({ mteja: document.getElementById('rName').value, muda: new Date().toLocaleString() });
         localStorage.setItem('nexbiz_receipt_history', JSON.stringify(history));
         window.print();
-        refreshAll();
     }
 
-    // REFRESH UI
+    // --- SETTINGS ---
+    function saveSettings() {
+        localStorage.setItem('nexbiz_site_name', document.getElementById('sName').value);
+        localStorage.setItem('nexbiz_site_logo', document.getElementById('sLogo').value);
+        localStorage.setItem('nexbiz_site_banner', document.getElementById('sBanner').value);
+        alert("Settings zimehifadhiwa! Zitaonekana kwenye Home Page sasa.");
+    }
+
     function refreshAll() {
-        // Cats
-        const cats = JSON.parse(localStorage.getItem('nexbiz_cats'));
+        // Categories
+        const cats = JSON.parse(localStorage.getItem('nexbiz_cats')) || ["ELECTRONICS"];
         const sel = document.getElementById('pCatSelect');
         const catDiv = document.getElementById('cat-list-admin');
         sel.innerHTML = ""; catDiv.innerHTML = "";
         cats.forEach((c, i) => {
             sel.innerHTML += `<option value="${c}">${c}</option>`;
-            catDiv.innerHTML += `<span class="p-item" style="margin:2px; display:inline-block;">${c} <button onclick="deleteCat(${i})" style="background:none; border:none; color:red; cursor:pointer;">x</button></span>`;
+            catDiv.innerHTML += `<div class="p-item" style="padding: 5px 10px; margin-bottom: 0;">${c} <button onclick="deleteCat(${i})" style="color:red; background:none; border:none; cursor:pointer;">x</button></div>`;
         });
 
         // Products
         const prods = JSON.parse(localStorage.getItem('nexbiz_products')) || [];
         document.getElementById('p-count').innerText = prods.length;
-        const pList = document.getElementById('admin-p-list');
-        pList.innerHTML = prods.map((p, i) => `
+        document.getElementById('admin-p-list').innerHTML = prods.map((p, i) => `
             <div class="p-item">
                 <img src="${p.img}">
                 <small>${p.cat}</small>
@@ -231,39 +300,26 @@
             </div>
         `).join('');
 
-        // Oda
+        // Oda (Sijagusa)
         const oda = JSON.parse(localStorage.getItem('nexbiz_orders')) || [];
         document.getElementById('o-count').innerText = oda.length;
-        document.getElementById('oda-list').innerHTML = oda.map((o,i) => `<div class="card"><small>${o.muda}</small><br><b>${o.mteja}</b> anahitaji <b>${o.bidhaa}</b> <button class="btn-red" onclick="deleteOda(${i})">X</button></div>`).join('');
+        document.getElementById('oda-list').innerHTML = oda.map((o,i) => `<div class="card"><small>${o.muda}</small><br><b>${o.mteja}</b> anahitaji <b>${o.bidhaa}</b></div>`).join('');
 
-        // Users
+        // Users & Analytics (Sijagusa)
         const users = JSON.parse(localStorage.getItem('nexbiz_all_users')) || [];
-        document.getElementById('user-list').innerHTML = users.map(u => `<div class="card"><b>${u.name}</b> (${u.email}) - ${u.region}</div>`).join('');
-
-        // Receipt History
-        const rHistory = JSON.parse(localStorage.getItem('nexbiz_receipt_history')) || [];
-        document.getElementById('receipt-history').innerHTML = rHistory.map(r => `<div>• Risiti ya ${r.mteja} (${r.muda})</div>`).join('');
-        
-        // Analytics
+        document.getElementById('user-list').innerHTML = users.map(u => `<div class="card"><b>${u.name}</b> - ${u.region}</div>`).join('');
         const v = JSON.parse(localStorage.getItem('nexbiz_analytics')) || [];
         document.getElementById('v-total').innerText = v.length;
     }
 
-    function deleteOda(i) {
-        let o = JSON.parse(localStorage.getItem('nexbiz_orders'));
-        o.splice(i, 1);
-        localStorage.setItem('nexbiz_orders', JSON.stringify(o));
-        refreshAll();
-    }
-
     function saveAbout() {
         localStorage.setItem('nexbiz_about', document.getElementById('aboutInput').value);
-        alert("Kuhusu imehifadhiwa!");
+        alert("About saved!");
     }
 
     window.onload = () => {
-        document.getElementById('aboutInput').value = localStorage.getItem('nexbiz_about') || "NexBiz Global ni kampuni inayoongoza katika biashara...";
-        refreshAll();
+        document.getElementById('aboutInput').value = localStorage.getItem('nexbiz_about') || "";
+        document.getElementById('sName').value = localStorage.getItem('nexbiz_site_name') || "NexBiz Global";
     };
 </script>
 </body>
