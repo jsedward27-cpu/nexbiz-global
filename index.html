@@ -3,26 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NexBiz Global | Home</title>
+    <title>NexBiz Global | Soko Lako la Kidijitali</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #0071e3; --d: #1d1d1f; --g: #f5f5f7; }
+        :root { --p: #0071e3; --d: #1d1d1f; --g: #f5f5f7; --s: #25d366; }
         * { margin:0; padding:0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
         
         header { position: fixed; width: 100%; background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); z-index: 1000; border-bottom: 1px solid #eee; }
         .nav { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; padding: 10px 20px; align-items: center; }
         
-        /* LOGO FIX */
         .logo-container { display: flex; align-items: center; text-decoration: none; color: var(--d); gap: 10px; }
         .logo-img { height: 55px; width: auto; object-fit: contain; }
         .logo-text { font-weight: 950; font-size: 1.5rem; }
 
         .nav-links a { text-decoration: none; color: #333; font-weight: 700; margin-left: 20px; font-size: 0.85rem; }
         
-        /* Hero */
-        .hero { height: 50vh; display: flex; align-items: center; justify-content: center; text-align: center; color: white; background: #000; position: relative; }
-        .hero img { position: absolute; width: 100%; height: 100%; object-fit: cover; opacity: 0.4; }
-        .hero-content { z-index: 2; }
+        /* HERO SECTION ILIYOBORESHWA */
+        .hero { 
+            height: 80vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            text-align: center; 
+            color: white; 
+            background: #000; 
+            position: relative; 
+            overflow: hidden;
+        }
+        /* Picha ya asili ya Kiafrika inayohusisha Biashara na Tech */
+        .hero-img { 
+            position: absolute; 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            opacity: 0.5; 
+            filter: brightness(0.7);
+        }
+        .hero-content { z-index: 2; max-width: 850px; padding: 0 20px; }
+        .hero-content h1 { font-size: clamp(2.2rem, 8vw, 4rem); font-weight: 800; line-height: 1.1; margin-bottom: 20px; }
+        .hero-content p { font-size: clamp(1rem, 4vw, 1.25rem); line-height: 1.6; opacity: 0.9; margin-bottom: 30px; }
+        
+        .hero-btns { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        .btn-main { background: var(--p); color: white; padding: 15px 35px; border-radius: 50px; text-decoration: none; font-weight: 800; transition: 0.3s; }
+        .btn-sub { background: white; color: var(--d); padding: 15px 35px; border-radius: 50px; text-decoration: none; font-weight: 800; }
 
         /* USER DASHBOARD (SIRI) */
         #user-portal { display: none; background: #fff; padding: 40px 20px; border-bottom: 1px solid #eee; }
@@ -32,17 +55,19 @@
 
         /* Main Store */
         section { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; }
-        .p-card { border: 1px solid #eee; border-radius: 20px; padding: 15px; background: #fff; transition: 0.3s; position: relative; }
-        .p-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 15px; }
-        .btn-order { width: 100%; padding: 12px; border: none; background: var(--d); color: #fff; border-radius: 10px; cursor: pointer; font-weight: 700; margin-top: 10px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+        .p-card { border: 1px solid #eee; border-radius: 20px; overflow: hidden; background: #fff; transition: 0.3s; }
+        .p-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .p-card img { width: 100%; height: 230px; object-fit: cover; }
+        .p-details { padding: 20px; }
+        .btn-order { width: 100%; padding: 14px; border: none; background: var(--d); color: #fff; border-radius: 12px; cursor: pointer; font-weight: 700; margin-top: 10px; }
 
         /* Auth Modal */
         .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:2000; align-items:center; justify-content:center; padding: 15px; }
         .modal-content { background:white; padding:30px; border-radius:20px; width:100%; max-width:450px; }
         input { width:100%; padding:12px; margin:8px 0; border:1px solid #ddd; border-radius:8px; }
 
-        footer { padding: 50px 20px; background: #f5f5f7; text-align: center; line-height: 1.8; margin-top: 50px; }
+        footer { padding: 60px 20px; background: #111; color: white; text-align: center; line-height: 1.8; margin-top: 50px; }
     </style>
 </head>
 <body>
@@ -56,17 +81,22 @@
         
         <div class="nav-links">
             <a href="#home">NYUMBANI</a>
-            <a href="#shop">BIDHAA</a>
-            <a href="javascript:void(0)" onclick="openModal()" id="nav-auth-btn" style="background:var(--p); color:white; padding:8px 18px; border-radius:20px;">SIGN IN</a>
+            <a href="#shop">DUKANI</a>
+            <a href="javascript:void(0)" onclick="openModal()" id="nav-auth-btn" style="background:var(--p); color:white; padding:10px 22px; border-radius:50px;">SIGN IN</a>
         </div>
     </div>
 </header>
 
 <div id="home" class="hero">
-    <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1200" alt="Hero">
+    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=1600" class="hero-img" alt="NexBiz Global African Commerce">
+    
     <div class="hero-content">
-        <h1>NexBiz Global Platform</h1>
-        <p>Future of Commerce, Designed for Excellence.</p>
+        <h1>Soko Lako la <span style="color:var(--p);">Kidijitali</span> Popote Ulipo</h1>
+        <p>Unganisha biashara yako na ulimwengu. Agiza Hardware, Electronics, Groceries, Beauty, Stationery na mahitaji mengine yote kwa urahisi kupitia simu au kompyuta yako.</p>
+        <div class="hero-btns">
+            <a href="#shop" class="btn-main">ANZA KUSHOP</a>
+            <a href="javascript:void(0)" onclick="openModal()" class="btn-sub">JIUNGE SASA</a>
+        </div>
     </div>
 </div>
 
@@ -87,7 +117,7 @@
                 <b>UTARATIBU WA MALIPO:</b><br>
                 Namba ya M-Pesa: <b>0763315267</b><br>
                 Jina: <b>JONAS EDWARD</b><br>
-                <small>*Baada ya malipo, wasiliana nasi kuthibitisha.</small>
+                <small>*Baada ya malipo, wasiliana nasi kuthibitisha kupitia WhatsApp.</small>
             </div>
             <button onclick="logout()" style="margin-top:20px; background:none; border:1px solid red; color:red; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">Toka (Logout)</button>
         </div>
@@ -95,18 +125,18 @@
 </div>
 
 <section id="shop">
-    <h2 style="text-align:center; margin-bottom:30px;">Duka la Bidhaa</h2>
+    <h2 style="text-align:center; font-size: 2rem; margin-bottom:40px; font-weight: 800;">Bidhaa Mbalimbali</h2>
     <div class="grid" id="p-grid"></div>
 </section>
 
-<section id="about">
-    <h2 style="text-align:center; margin-bottom:20px;">Kuhusu Sisi</h2>
-    <p id="about-display" style="text-align:center; max-width:800px; margin:0 auto; color:#666;"></p>
+<section id="about" style="background: var(--g); padding: 60px 20px; border-radius: 30px;">
+    <h2 style="text-align:center; margin-bottom:20px; font-weight: 800;">Kuhusu NexBiz Global</h2>
+    <p id="about-display" style="text-align:center; max-width:850px; margin:0 auto; color:#444; font-size: 1.1rem; line-height: 1.8;"></p>
 </section>
 
 <div class="modal" id="authModal">
     <div class="modal-content">
-        <h2 style="margin-bottom:15px; text-align:center;">Jisajili NexBiz</h2>
+        <h2 style="margin-bottom:20px; text-align:center; font-weight: 800;">Jisajili NexBiz</h2>
         
         <div style="display:flex; gap:10px;">
             <input type="text" id="fName" placeholder="Jina la Kwanza">
@@ -118,22 +148,23 @@
         
         <div style="display:flex; gap:5px; align-items:center; margin: 8px 0;">
             <small>Tarehe ya Leo:</small>
-            <input type="number" id="regDay" placeholder="DD" style="width:60px;">
-            <input type="number" id="regMonth" placeholder="MM" style="width:60px;">
-            <input type="number" id="regYear" placeholder="YYYY" style="width:100px;">
+            <input type="number" id="regDay" placeholder="DD" style="width:65px;">
+            <input type="number" id="regMonth" placeholder="MM" style="width:65px;">
+            <input type="number" id="regYear" placeholder="2026" value="2026" readonly style="width:90px; background: #eee;">
         </div>
         
-        <input type="text" id="regCountry" placeholder="Nchi (Tanzania)" value="Tanzania">
         <input type="text" id="regRegion" placeholder="Mkoa">
+        <input type="text" id="regCountry" placeholder="Nchi" value="Tanzania">
         
-        <button class="btn-order" style="background:var(--p);" onclick="processAuth()">ENDELEA</button>
-        <button onclick="closeModal()" style="width:100%; background:none; border:none; color:gray; margin-top:10px; cursor:pointer;">Funga</button>
+        <button class="btn-order" style="background:var(--p); padding: 15px;" onclick="processAuth()">TENGENEZA AKAUNTI</button>
+        <button onclick="closeModal()" style="width:100%; background:none; border:none; color:gray; margin-top:15px; cursor:pointer;">Funga</button>
     </div>
 </div>
 
 <footer>
+    <p style="font-weight: 800; font-size: 1.2rem; color: var(--p);">NEXBIZ GLOBAL</p>
     <p><b>LOCATION:</b> ARUSHA, TANZANIA | <b>EMAIL:</b> jsedward27@gmail.com</p>
-    <hr style="margin:20px 0; opacity:0.1;">
+    <div style="margin: 20px 0; opacity: 0.1; border-top: 1px solid white;"></div>
     <p>&copy; 2026 NexBiz Global. All Rights Reserved. <br> Designed by <b>JONAS E. THE GREAT</b></p>
 </footer>
 
@@ -148,30 +179,27 @@
         const phone = document.getElementById('regPhone').value;
         const day = document.getElementById('regDay').value;
         const month = document.getElementById('regMonth').value;
-        const year = document.getElementById('regYear').value;
 
-        if(!f || !m || !l || !phone || !day) {
-            alert("Tafadhali jaza majina yako matatu na taarifa zote!");
+        if(!f || !m || !l || !phone || !day || !month) {
+            alert("Tafadhali jaza majina yako matatu na tarehe!");
             return;
         }
 
         const user = {
             name: `${f} ${m} ${l}`,
             phone: phone,
-            date: `${day}/${month}/${year}`,
+            date: `${day}/${month}/2026`,
             region: document.getElementById('regRegion').value,
             country: document.getElementById('regCountry').value
         };
 
-        // Hifadhi session ya mteja
         localStorage.setItem('nexbiz_user_session', JSON.stringify(user));
         
-        // Tuma kwa list ya Admin
         let allUsers = JSON.parse(localStorage.getItem('nexbiz_all_users')) || [];
         allUsers.push(user);
         localStorage.setItem('nexbiz_all_users', JSON.stringify(allUsers));
         
-        alert("Karibu " + user.name);
+        alert("Karibu NexBiz, " + user.name);
         location.reload();
     }
 
@@ -185,26 +213,33 @@
         if(session) {
             document.getElementById('user-portal').style.display = 'block';
             document.getElementById('user-display-name').innerText = session.name.toUpperCase();
-            document.getElementById('nav-auth-btn').innerText = "MY ACCOUNT";
+            document.getElementById('nav-auth-btn').innerText = "AKAUNTI YANGU";
             document.getElementById('nav-auth-btn').style.background = "#25d366";
         }
 
         const products = JSON.parse(localStorage.getItem('nexbiz_products')) || [];
         const grid = document.getElementById('p-grid');
-        grid.innerHTML = products.map(p => `
-            <div class="p-card">
-                <img src="${p.img}">
-                <h4>${p.name}</h4>
-                <p style="color:var(--p); font-weight:800;">TSH ${p.price}</p>
-                <button class="btn-order" onclick="window.open('https://wa.me/255763315267?text=Habari, Nahitaji ${p.name}')">AGIZA</button>
-            </div>
-        `).join('');
+        
+        if(products.length === 0) {
+            grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: #888;'>Bado hakuna bidhaa sokoni. Admin ataziweka hivi punde.</p>";
+        } else {
+            grid.innerHTML = products.map(p => `
+                <div class="p-card">
+                    <img src="${p.img}">
+                    <div class="p-details">
+                        <small style="color: var(--p); font-weight: 800; text-transform: uppercase;">${p.cat || 'Global'}</small>
+                        <h3 style="margin: 5px 0; font-size: 1.2rem;">${p.name}</h3>
+                        <p style="color: var(--d); font-weight: 800; font-size: 1.1rem;">TSH ${p.price}</p>
+                        <button class="btn-order" onclick="window.open('https://wa.me/255763315267?text=Habari NexBiz, Nahitaji ${p.name}')">AGIZA SASA</button>
+                    </div>
+                </div>
+            `).join('');
+        }
 
-        document.getElementById('about-display').innerText = localStorage.getItem('nexbiz_about') || "NexBiz Global ni suluhisho la biashara za kisasa.";
+        document.getElementById('about-display').innerText = localStorage.getItem('nexbiz_about') || "NexBiz Global ni suluhisho lako la kidijitali linalounganisha bidhaa za Hardware, Electronics, Groceries na huduma nyingine nyingi moja kwa moja mlangoni kwako kupitia uagizaji rahisi na salama.";
     }
 
     window.onload = init;
 </script>
 </body>
 </html>
-
